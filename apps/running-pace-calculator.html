@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Biegów</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --primary-light: #757de8;
+      --primary-dark: #002984;
+      --text-on-primary: #ffffff;
+      --secondary-color: #f50057;
+      --background-color: #f5f5f5;
+      --card-color: #ffffff;
+      --text-color: #333333;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background-color: var(--card-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-top: 0;
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    select, input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    .time-inputs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .time-input {
+      flex: 1;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: var(--text-on-primary);
+      border: none;
+      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .result-card {
+      display: none;
+      background-color: var(--card-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+    }
+
+    .result-title {
+      color: var(--primary-color);
+      margin-top: 0;
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-size: 2.5rem;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: var(--secondary-color);
+      font-weight: 700;
+    }
+
+    .info-text {
+      text-align: center;
+      margin-bottom: 0;
+      color: #666;
+    }
+
+    /* Tabs styling */
+    .tabs {
+      display: flex;
+      margin-bottom: 1rem;
+      background-color: var(--card-color);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 1rem 0;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      font-weight: 500;
+      color: var(--text-color);
+      border-bottom: 3px solid transparent;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 3px solid var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .pace-inputs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pace-input {
+      flex: 1;
+    }
+
+    @media (max-width: 480px) {
+      .time-inputs, .pace-inputs {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="tabs">
+    <div class="tab active" data-tab="tab1">Oblicz tempo</div>
+    <div class="tab" data-tab="tab2">Oblicz czas ukończenia</div>
+  </div>
+
+  <!-- Tab 1: Oblicz tempo -->
+  <div id="tab1" class="tab-content active">
+    <div class="card">
+      <h1>Kalkulator Tempa Biegu</h1>
+      <div class="form-group">
+        <label for="distance1">Wybierz dystans:</label>
+        <select id="distance1">
+          <option value="5">5 km</option>
+          <option value="10">10 km</option>
+          <option value="15">15 km</option>
+          <option value="21.0975">Półmaraton (21.0975 km)</option>
+          <option value="42.195">Maraton (42.195 km)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Planowany czas ukończenia:</label>
+        <div class="time-inputs">
+          <div class="time-input">
+            <label for="hours1">Godziny</label>
+            <input type="number" id="hours1" min="0" value="0">
+          </div>
+          <div class="time-input">
+            <label for="minutes1">Minuty</label>
+            <input type="number" id="minutes1" min="0" max="59" value="45">
+          </div>
+          <div class="time-input">
+            <label for="seconds1">Sekundy</label>
+            <input type="number" id="seconds1" min="0" max="59" value="0">
+          </div>
+        </div>
+      </div>
+      <button id="calculate-pace">Oblicz tempo</button>
+    </div>
+
+    <div class="result-card" id="pace-result">
+      <h2 class="result-title">Twoje tempo biegu</h2>
+      <p class="result-value" id="pace-value">5:30 min/km</p>
+      <p class="info-text">Aby ukończyć dystans w planowanym czasie, biegnij w tym tempie.</p>
+    </div>
+  </div>
+
+  <!-- Tab 2: Oblicz czas ukończenia -->
+  <div id="tab2" class="tab-content">
+    <div class="card">
+      <h1>Kalkulator Czasu Ukończenia</h1>
+      <div class="form-group">
+        <label for="distance2">Wybierz dystans:</label>
+        <select id="distance2">
+          <option value="5">5 km</option>
+          <option value="10">10 km</option>
+          <option value="15">15 km</option>
+          <option value="21.0975">Półmaraton (21.0975 km)</option>
+          <option value="42.195">Maraton (42.195 km)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tempo biegu (min/km):</label>
+        <div class="pace-inputs">
+          <div class="pace-input">
+            <label for="pace-minutes">Minuty</label>
+            <input type="number" id="pace-minutes" min="0" value="5">
+          </div>
+          <div class="pace-input">
+            <label for="pace-seconds">Sekundy</label>
+            <input type="number" id="pace-seconds" min="0" max="59" value="30">
+          </div>
+        </div>
+      </div>
+      <button id="calculate-time">Oblicz czas ukończenia</button>
+    </div>
+
+    <div class="result-card" id="time-result">
+      <h2 class="result-title">Twój czas ukończenia</h2>
+      <p class="result-value" id="time-value">0:45:30</p>
+      <p class="info-text">Ukończysz bieg w tym czasie, utrzymując podane tempo.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Obsługa zakładek
+    $(".tab").click(function() {
+      const tabId = $(this).data("tab");
+
+      // Ukryj aktywne zakładki i pokaż wybraną
+      $(".tab").removeClass("active");
+      $(".tab-content").removeClass("active");
+      $(this).addClass("active");
+      $("#" + tabId).addClass("active");
+
+      // Ukryj wyniki przy zmianie zakładek
+      $(".result-card").hide();
+    });
+
+    // Kalkulator 1: Obliczanie tempa
+    $("#calculate-pace").click(function() {
+      // Pobierz dane z formularza
+      const distance = parseFloat($("#distance1").val());
+      const hours = parseInt($("#hours1").val()) || 0;
+      const minutes = parseInt($("#minutes1").val()) || 0;
+      const seconds = parseInt($("#seconds1").val()) || 0;
+
+      // Oblicz całkowity czas w minutach
+      const totalTimeInMinutes = (hours * 60) + minutes + (seconds / 60);
+
+      // Oblicz tempo w minutach na kilometr
+      const paceInMinutes = totalTimeInMinutes / distance;
+
+      // Konwertuj na format min:sec
+      const paceMinutes = Math.floor(paceInMinutes);
+      const paceSeconds = Math.round((paceInMinutes - paceMinutes) * 60);
+
+      // Formatuj wynik
+      const formattedPace = `${paceMinutes}:${paceSeconds.toString().padStart(2, '0')} min/km`;
+
+      // Wyświetl wynik
+      $("#pace-value").text(formattedPace);
+      $("#pace-result").slideDown();
+    });
+
+    // Kalkulator 2: Obliczanie czasu ukończenia
+    $("#calculate-time").click(function() {
+      // Pobierz dane z formularza
+      const distance = parseFloat($("#distance2").val());
+      const paceMinutes = parseInt($("#pace-minutes").val()) || 0;
+      const paceSeconds = parseInt($("#pace-seconds").val()) || 0;
+
+      // Oblicz tempo w minutach
+      const paceInMinutes = paceMinutes + (paceSeconds / 60);
+
+      // Oblicz całkowity czas w minutach
+      const totalTimeInMinutes = distance * paceInMinutes;
+
+      // Konwertuj na format h:min:sec
+      const hours = Math.floor(totalTimeInMinutes / 60);
+      const minutes = Math.floor(totalTimeInMinutes % 60);
+      const seconds = Math.round((totalTimeInMinutes - Math.floor(totalTimeInMinutes)) * 60);
+
+      // Formatuj wynik
+      let formattedTime = '';
+      if (hours > 0) {
+        formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      } else {
+        formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      // Wyświetl wynik
+      $("#time-value").text(formattedTime);
+      $("#time-result").slideDown();
+    });
+  });
+</script>
+</body>
+</html>
