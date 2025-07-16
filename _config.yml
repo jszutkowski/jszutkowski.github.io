@@ -122,8 +122,8 @@ comments:
   giscus:
     repo: jszutkowski/jszutkowski.github.io
     repo_id: R_kgDOOHXiRA
-    category: Announcements
-    category_id: DIC_kwDOOHXiRM4CtCSi
+    category: General
+    category_id: DIC_kwDOOHXiRM4CtCSj
     mapping: # optional, default to 'pathname'
     strict: # optional, default to '0'
     input_position: # optional, default to 'bottom'
