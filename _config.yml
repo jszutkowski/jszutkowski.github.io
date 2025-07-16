@@ -121,7 +121,7 @@ comments:
   # Giscus options › https://giscus.app
   giscus:
     repo: jszutkowski/jszutkowski.github.io
-    repo_id: 947249732
+    repo_id: R_kgDOOHXiRA
     category: Announcements
     category_id: DIC_kwDOOHXiRM4CtCSi
     mapping: # optional, default to 'pathname'
